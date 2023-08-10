@@ -202,9 +202,10 @@ jobs:
     needs: deploy
     steps:
     - name: Check website status
+      id: check_status
       run: |
         status=$(curl -s -o /dev/null -w "%{http_code}" https://yataski.ddns.net)
-        echo "::set-env name=status::$status"
+        echo "::set-output name=status::$status"
     - name: Send message
       uses: appleboy/telegram-action@master
       with:
@@ -212,5 +213,5 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           Деплой YaTaski успешно выполнен!
-          Код статуса сайта: ${{ env.status }}
+          Код статуса сайта: ${{ steps.check_status.outputs.status }}
           https://yataski.ddns.net
