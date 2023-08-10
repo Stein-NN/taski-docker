@@ -212,5 +212,5 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           Деплой YaTaski успешно выполнен!
-          Код статуса сайта: $status
+          Код статуса сайта: ${{ env.status }}
           https://yataski.ddns.net
