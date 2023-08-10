@@ -196,3 +196,21 @@ jobs:
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
           sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+
+  send_message:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    - name: Check website status
+      run: |
+        status=$(curl -s -o /dev/null -w "%{http_code}" https://yataski.ddns.net)
+        echo "Website status: $status"
+    - name: Send message
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          Деплой YaTaski успешно выполнен!
+          Код статуса сайта: $status
+          https://yataski.ddns.net
